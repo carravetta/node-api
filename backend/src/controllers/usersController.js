@@ -14,9 +14,15 @@ const addUser = async (req, res)=>{
     res.status(200).json(newUser);
 
 }
+
+const removeUser = async (req, res)=>{
+    const removedUser = await usersModel.removeUser(req.body);
+    res.status(200).json(removedUser);
+}
 module.exports = {
 
     getAll, 
-    addUser
+    addUser,
+    removeUser
 
 };

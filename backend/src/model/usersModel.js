@@ -34,7 +34,6 @@ const addUser = (newUser)=>{
       
         db.insert({user}, (err, user)=>{
 
-
             if(err){
                 console.log(err);
                 reject(err)
@@ -44,20 +43,52 @@ const addUser = (newUser)=>{
             }
     
         });
-
     })
-   
-
 }
 
-const removeUser=(user)=>{
+const findOne = (userEmail)=>{
+    const db = dbConfig();
 
+    return new Promise((resolve, reject)=>{
 
+        db.findOne({_email: userEmail.email}, (err, user)=>{
+            console.log("USER: "+user)
+            if(err){
+                reject(userEmail)
+            }else{
+                newUser = new User(user.name, user.age, user.email);
+                resolve(newUser);
+            }
+        });
+
+    });
+}
+
+const removeUser = (userEmail)=>{
+
+    const db = dbConfig();
+    console.log(userEmail._email);
+    var user = findOne(userEmail);
+    return new Promise((resolve, reject)=>{
+
+        db.remove({user}, {}, (err)=>{
+
+            if(err){
+                console.log("usuario não encontrado");
+                reject(err)
+            }else{
+                console.log(`Usuario do email ${userEmail} removido com sucesso` );
+                resolve(user.email);
+            }
+        });
+
+    });
 
 }
 
 module.exports = {
     getAll,
     dbConfig,
-    addUser
+    addUser,
+    removeUser
 }
