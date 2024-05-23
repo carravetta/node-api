@@ -1,19 +1,16 @@
 const Datastore = require("nedb");
 const User = require("./User");
-const dbConfig = ()=>{ 
 
     const db = new Datastore({
     filename: "users.db",
     autoload: true
     });
 
-    return db;
-}
 
 const getAll = () =>{
 
     return new Promise((resolve, reject)=>{
-        const db = dbConfig();
+        
         db.find({}).exec((err, users)=>{
             if(err){
                 console.log(`ERRO DE BANCO DE DADOS: ${err}`);
@@ -27,8 +24,25 @@ const getAll = () =>{
     });
   }
 
+const getOne = (email) =>{
+
+    return new Promise((resolve, reject)=>{
+        
+        db.findOne({_email: email}, (err, user)=>{
+            if(err){
+                console.log(`ERRO DE BANCO DE DADOS: ${err}`);
+                reject(err)
+            }else{
+                    console.log(`Usuario Encontrados: ${JSON.stringify(user)}`);
+                    resolve(user);
+            }
+        });
+    });    
+
+}
+
 const addUser = (newUser)=>{
-    const db = dbConfig();
+    
     var user = new User(newUser.name, newUser.age, newUser.email);
     return new Promise((resolve, reject)=>{
       
@@ -43,12 +57,10 @@ const addUser = (newUser)=>{
             }
     
         });
-    })
+    });
 }
 
 const removeUserByEmail = (userEmail)=>{
-
-    const db = dbConfig();
     
     return new Promise((resolve, reject)=>{
 
@@ -64,12 +76,9 @@ const removeUserByEmail = (userEmail)=>{
         });
 
     });
-
 }
 
 const removeAll = ()=>{
-
-    const db = dbConfig();
 
     return new Promise((resolve, reject)=>{
         db.remove({}, {multi: true}, (err, numRemoved)=>{
@@ -82,13 +91,12 @@ const removeAll = ()=>{
                 resolve(numRemoved);
             }
         })
-    })
-
+    });
 }
 
 module.exports = {
     getAll,
-    dbConfig,
+    getOne,
     addUser,
     removeUserByEmail,
     removeAll
