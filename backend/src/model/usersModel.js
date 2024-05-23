@@ -32,7 +32,7 @@ const addUser = (newUser)=>{
     var user = new User(newUser.name, newUser.age, newUser.email);
     return new Promise((resolve, reject)=>{
       
-        db.insert({user}, (err, user)=>{
+        db.insert(user, (err, user)=>{
 
             if(err){
                 console.log(err);
@@ -46,43 +46,43 @@ const addUser = (newUser)=>{
     })
 }
 
-const findOne = (userEmail)=>{
-    const db = dbConfig();
-
-    return new Promise((resolve, reject)=>{
-
-        db.findOne({_email: userEmail.email}, (err, user)=>{
-            console.log("USER: "+user)
-            if(err){
-                reject(userEmail)
-            }else{
-                newUser = new User(user.name, user.age, user.email);
-                resolve(newUser);
-            }
-        });
-
-    });
-}
-
-const removeUser = (userEmail)=>{
+const removeUserByEmail = (userEmail)=>{
 
     const db = dbConfig();
-    console.log(userEmail._email);
-    var user = findOne(userEmail);
+    
     return new Promise((resolve, reject)=>{
 
-        db.remove({user}, {}, (err)=>{
+        db.remove({_email: userEmail.email}, {}, (err)=>{
 
             if(err){
                 console.log("usuario não encontrado");
                 reject(err)
             }else{
                 console.log(`Usuario do email ${userEmail} removido com sucesso` );
-                resolve(user.email);
+                resolve(userEmail);
             }
         });
 
     });
+
+}
+
+const removeAll = ()=>{
+
+    const db = dbConfig();
+
+    return new Promise((resolve, reject)=>{
+        db.remove({}, {multi: true}, (err, numRemoved)=>{
+
+            if(err){
+                console.log("Nenhum usuario encontrado");
+                reject(err)
+            }else{
+                console.log(`${numRemoved} usuairos removidos com sucesso` );
+                resolve(numRemoved);
+            }
+        })
+    })
 
 }
 
@@ -90,5 +90,6 @@ module.exports = {
     getAll,
     dbConfig,
     addUser,
-    removeUser
+    removeUserByEmail,
+    removeAll
 }
