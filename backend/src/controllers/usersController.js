@@ -33,6 +33,11 @@ const removeAll = async (req, res)=>{
     res.status(200).json(removedUsers);
 }
 
+const updateUser = async (req, res)=>{
+
+    const usersUpdated = await usersModel.updateUser(req.params.email, req.body);
+    res.status(200).json(usersUpdated);
+}
 
 module.exports = {
 
@@ -40,6 +45,7 @@ module.exports = {
     getOne,
     addUser,
     removeUserByEmail,
-    removeAll
+    removeAll,
+    updateUser
 
 };

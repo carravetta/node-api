@@ -94,10 +94,28 @@ const removeAll = ()=>{
     });
 }
 
+const updateUser = (email, userUpdated)=>{
+    
+    return new Promise((resolve, reject)=>{
+        const newUser = new User (userUpdated.name, userUpdated.age, userUpdated.email);    
+        db.update({_email: email}, {$set: newUser}, (err)=>{
+
+            if(err){
+                console.log(err);
+                reject(err)
+            }else{
+                console.log("Usuario atualizado", newUser);
+                resolve(newUser)
+            }
+        });
+    });
+}
+
 module.exports = {
     getAll,
     getOne,
     addUser,
     removeUserByEmail,
-    removeAll
+    removeAll,
+    updateUser
 }

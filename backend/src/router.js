@@ -5,6 +5,7 @@ const router = express.Router();
 router.get(`/users`, usersController.getAll);
 router.get(`/users/:email`, usersController.getOne);
 router.post('/users', usersController.addUser);
+router.put('/users/:email', usersController.updateUser);
 router.delete('/users', usersController.removeUserByEmail);
 router.delete('/users/deleteall', usersController.removeAll);
 
