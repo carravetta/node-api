@@ -1,4 +1,6 @@
 const Ajv  = require('ajv');
+const userModel = require('../model/usersModel');
+
 const validadeUser = (req, res, next)=>{
    
     const {body} = req;
@@ -25,7 +27,21 @@ const validadeUser = (req, res, next)=>{
 
 }
 
+const uniqueEmail = (req, res, next) => {
+    
+    const {body} = req;
+
+    
+    verificaEmail = usersModel.getOne(email)
+
+    if(verificaEmail == null){
+        return res.status(200).json({message: `O usuário com o e-mail ${newUser.email} já existe.`});;
+    }
+    next();
+}
+
 module.exports = {
 
-validadeUser
+validadeUser,
+uniqueEmail
 }
