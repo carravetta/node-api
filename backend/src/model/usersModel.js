@@ -7,7 +7,7 @@ const User = require("./User");
     });
 
 
-const getAll = () =>{
+const getAll = async () =>{
 
     return new Promise((resolve, reject)=>{
         
@@ -24,7 +24,7 @@ const getAll = () =>{
     });
   }
 
-const getOne = (email) =>{
+const getOne = async (email) =>{
 
     return new Promise((resolve, reject)=>{
         
@@ -33,26 +33,35 @@ const getOne = (email) =>{
                 console.log(`ERRO DE BANCO DE DADOS: ${err}`);
                 reject(err)
             }else{
-                    console.log(`Usuario Encontrados: ${JSON.stringify(user)}`);
-                    resolve(user);
+                console.log(`Usuario Encontrados: ${JSON.stringify(user)}`);
+                resolve(user);
             }
         });
+        
     });    
-
 }
 
-const addUser = (newUser)=>{
+const addUser = async (newUser)=>{
     
     var user = new User(newUser.name, newUser.age, newUser.email);
+    verificaEmail = await getOne(user.email);
+
+    if(verificaEmail != null){
+        console.log(`O usuário com o e-mail ${newUser.email} já existe.`);
+        return `O usuário com o e-mail ${newUser.email} já existe.`; 
+    }
+
+    console.log("---VERIFICA EMAIL---", verificaEmail);
+    
     return new Promise((resolve, reject)=>{
-      
+    
         db.insert(user, (err, user)=>{
 
             if(err){
                 console.log(err);
                 reject(err)
             }else{
-                console.log("Usuario adicionado", user);
+                console.log(`Usuario adicionado ${JSON.stringify(user)}`);
                 resolve(user)
             }
     
@@ -60,7 +69,8 @@ const addUser = (newUser)=>{
     });
 }
 
-const removeUserByEmail = (userEmail)=>{
+
+const removeUserByEmail = async (userEmail)=>{
     
     return new Promise((resolve, reject)=>{
 
@@ -78,7 +88,7 @@ const removeUserByEmail = (userEmail)=>{
     });
 }
 
-const removeAll = ()=>{
+const removeAll = async ()=>{
 
     return new Promise((resolve, reject)=>{
         db.remove({}, {multi: true}, (err, numRemoved)=>{
@@ -94,7 +104,7 @@ const removeAll = ()=>{
     });
 }
 
-const updateUser = (email, userUpdated)=>{
+const updateUser = async (email, userUpdated)=>{
     
     return new Promise((resolve, reject)=>{
         const newUser = new User (userUpdated.name, userUpdated.age, userUpdated.email);    

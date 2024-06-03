@@ -9,7 +9,6 @@ const getAll = async (_req, res)=> {
 }
 
 const getOne = async (req, res)=>{
-    console.log(`PARAMS: ${req.params.email}`);
     const user = await usersModel.getOne(req.params.email);
     return res.status(200).json(user);
 
