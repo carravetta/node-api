@@ -1,5 +1,5 @@
 const Ajv  = require('ajv');
-const userModel = require('../model/usersModel');
+const usersModel = require('../model/usersModel');
 
 const validadeUser = (req, res, next)=>{
    
@@ -27,21 +27,45 @@ const validadeUser = (req, res, next)=>{
 
 }
 
-const uniqueEmail = (req, res, next) => {
-    
-    const {body} = req;
+const uniqueEmail = async (req, res, next) => {
+        
+    const {body} = req
 
-    
-    verificaEmail = usersModel.getOne(email)
+    if(req.params.email != null){
+        const emailParam = await usersModel.getOne(req.params.email);
+        if(emailParam == null){
+            return res.status(200).json({message: `O usuário com o e-mail ${req.params.email} não cadastrado.`});
+        }
+    }
 
-    if(verificaEmail == null){
-        return res.status(200).json({message: `O usuário com o e-mail ${newUser.email} já existe.`});;
+    const verificaEmail = await usersModel.getOne(body.email);
+    console.log("VERIFICA EMAIL: ", verificaEmail);
+    if(verificaEmail != null){
+        console.log("UNIQUEEMAIL", body.email);
+    
+        return res.status(200).json({message: `O usuário com o e-mail ${body.email} já existe.`});
     }
     next();
 }
 
+const uniqueEmailToRemove = async (req, res, next) => {
+        
+    const {body} = req
+
+    const verificaEmail = await usersModel.getOne(body.email);
+    console.log("VERIFICA EMAIL: ", verificaEmail);
+    if(verificaEmail == null){
+        console.log("UNIQUEEMAIL", body.email);
+    
+        return res.status(200).json({message: `Usuário com o e-mail ${body.email} não encontrado.`});
+    }
+    next();
+}
+
+
 module.exports = {
 
 validadeUser,
-uniqueEmail
+uniqueEmail,
+uniqueEmailToRemove
 }

@@ -44,15 +44,14 @@ const getOne = async (email) =>{
 const addUser = async (newUser)=>{
     
     var user = new User(newUser.name, newUser.age, newUser.email);
-    verificaEmail = await getOne(user.email);
+    const verificaEmail = await getOne(user.email);
 
     if(verificaEmail != null){
         console.log(`O usuário com o e-mail ${newUser.email} já existe.`);
         return `O usuário com o e-mail ${newUser.email} já existe.`; 
     }
 
-    console.log("---VERIFICA EMAIL---", verificaEmail);
-    
+   
     return new Promise((resolve, reject)=>{
     
         db.insert(user, (err, user)=>{
@@ -69,7 +68,6 @@ const addUser = async (newUser)=>{
     });
 }
 
-
 const removeUserByEmail = async (userEmail)=>{
     
     return new Promise((resolve, reject)=>{
@@ -77,7 +75,6 @@ const removeUserByEmail = async (userEmail)=>{
         db.remove({_email: userEmail.email}, {}, (err)=>{
 
             if(err){
-                console.log("usuario não encontrado");
                 reject(err)
             }else{
                 console.log(`Usuario do email ${userEmail} removido com sucesso` );
